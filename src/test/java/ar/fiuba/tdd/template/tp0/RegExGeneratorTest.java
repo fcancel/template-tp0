@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 
@@ -60,12 +61,19 @@ public class RegExGeneratorTest {
         assertTrue(validate("...", 1));
     }
 
-    //TODO: assert these tests
-    /*
+    @Test
+    public void testLiteralWithEndSet() {
+        assertTrue(validate("\\[abc]",1));
+    }
+
     @Test
     public void testZeroOrOneCharacter() {
         assertTrue(validate("\\@.h?", 1));
     }
+
+    //TODO: assert these tests
+    /*
+
 
     @Test
     public void testCharacterSet() {

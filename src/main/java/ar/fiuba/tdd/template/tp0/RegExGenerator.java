@@ -34,7 +34,7 @@ public class RegExGenerator {
         else{
             char currentCharOfRegex;
             StringBuffer buffer = new StringBuffer();
-
+            Random randomGenerator = new Random();
             for(int indexOfChar = 0; indexOfChar < regEx.length(); indexOfChar++){
                 currentCharOfRegex = regEx.charAt(indexOfChar);
 
@@ -43,6 +43,12 @@ public class RegExGenerator {
                                 break;
                     case '\\':  buffer.append(regEx.charAt(indexOfChar+1));
                                 indexOfChar++;
+                                break;
+                    case '?':   if(randomGenerator.nextInt(1) == 1){ //We will generate a randomness to add or not the char
+                                    if(indexOfChar > 0){            //So that it will not try to access negative values
+                                        buffer.append(regEx.charAt(indexOfChar-1));
+                                    }
+                                }
                                 break;
                     default:    buffer.append(currentCharOfRegex);
                                 break;
