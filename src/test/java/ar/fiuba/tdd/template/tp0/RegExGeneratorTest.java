@@ -29,7 +29,17 @@ public class RegExGeneratorTest {
                     (item1, item2) -> item1 && item2);
     }
 
-    //TODO: Uncomment these tests
+    @Test
+    public void testACharacter() {
+        assertTrue(validate("a", 1));
+    }
+
+    @Test
+    public void testAStreamOfSimpleCharacters() {
+        assertTrue(validate("Stream55", 1));
+    }
+
+    //TODO: assert these tests
     /*
     @Test
     public void testAnyCharacter() {
@@ -66,5 +76,4 @@ public class RegExGeneratorTest {
         assertTrue(validate("[abc]+", 1));
     }
     */
-    // TODO: Add more tests!!!
 }

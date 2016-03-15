@@ -21,13 +21,7 @@ public class RegExGenerator {
             listOfStringsWithMatchingRegex.add(generateOneRandomStringFromRegex(regEx));
         }
 
-        return new ArrayList<String>() {
-            {
-                add("a");
-                add("b");
-                add("c");
-            }
-        };
+        return listOfStringsWithMatchingRegex;
     }
 
     private String generateOneRandomStringFromRegex(String regEx) {
@@ -35,8 +29,26 @@ public class RegExGenerator {
             return "";
         }
         else{
-            return regEx;
+            char currentCharOfRegex;
+            StringBuffer buffer = new StringBuffer();
+
+            for(int indexOfChar = 0; indexOfChar < regEx.length(); indexOfChar++){
+                currentCharOfRegex = regEx.charAt(indexOfChar);
+                if(isCharSpecial(currentCharOfRegex)){
+                    //TODO: act accordingly
+                }
+                else{
+                    buffer.append(currentCharOfRegex);
+                }
+            }
+            String stringToReturn = buffer.toString();
+            return stringToReturn;
         }
+    }
+
+    //TODO: complete functionality
+    private boolean isCharSpecial(char currentCharOfRegex) {
+        return false;
     }
 
 
