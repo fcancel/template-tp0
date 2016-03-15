@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class RegExGenerator {
     private int maxLength;
-    static final int CODE_OF_MAX_NUMBER_OF_CHAR = 256;
+    static final int CODE_OF_MAX_NUMBER_OF_CHAR = 255;
 
     public RegExGenerator(int maxLength) {
 
@@ -38,26 +38,21 @@ public class RegExGenerator {
             for(int indexOfChar = 0; indexOfChar < regEx.length(); indexOfChar++){
                 currentCharOfRegex = regEx.charAt(indexOfChar);
 
-                buffer.append( appendAccordingToCharInRegex(currentCharOfRegex) );
-
+                switch (currentCharOfRegex){
+                    case '.':   buffer.append(randomChar());
+                                break;
+                    case '\\':  buffer.append(regEx.charAt(indexOfChar+1));
+                                indexOfChar++;
+                                break;
+                    default:    buffer.append(currentCharOfRegex);
+                                break;
+                }
             }
+
             String stringToReturn = buffer.toString();
             System.out.println(stringToReturn);
             return stringToReturn;
         }
-    }
-
-    //TODO: complete functionality
-    private String appendAccordingToCharInRegex(char currentCharOfRegex) {
-       String stringToReturn;
-
-        switch (currentCharOfRegex){
-            case '.':   stringToReturn = String.valueOf(randomChar());
-                    break;
-            default:    stringToReturn = String.valueOf(currentCharOfRegex);
-                    break;
-        }
-        return stringToReturn;
     }
 
     private char randomChar(){
