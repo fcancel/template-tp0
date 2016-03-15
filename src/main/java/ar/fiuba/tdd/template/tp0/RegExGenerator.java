@@ -2,9 +2,11 @@ package ar.fiuba.tdd.template.tp0;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class RegExGenerator {
     private int maxLength;
+    static final int CODE_OF_MAX_NUMBER_OF_CHAR = 256;
 
     public RegExGenerator(int maxLength) {
 
@@ -24,6 +26,7 @@ public class RegExGenerator {
         return listOfStringsWithMatchingRegex;
     }
 
+
     private String generateOneRandomStringFromRegex(String regEx) {
         if(this.maxLength < regEx.length()){
             return "";
@@ -34,21 +37,33 @@ public class RegExGenerator {
 
             for(int indexOfChar = 0; indexOfChar < regEx.length(); indexOfChar++){
                 currentCharOfRegex = regEx.charAt(indexOfChar);
-                if(isCharSpecial(currentCharOfRegex)){
-                    //TODO: act accordingly
-                }
-                else{
-                    buffer.append(currentCharOfRegex);
-                }
+
+                buffer.append( appendAccordingToCharInRegex(currentCharOfRegex) );
+
             }
             String stringToReturn = buffer.toString();
+            System.out.println(stringToReturn);
             return stringToReturn;
         }
     }
 
     //TODO: complete functionality
-    private boolean isCharSpecial(char currentCharOfRegex) {
-        return false;
+    private String appendAccordingToCharInRegex(char currentCharOfRegex) {
+       String stringToReturn;
+
+        switch (currentCharOfRegex){
+            case '.':   stringToReturn = String.valueOf(randomChar());
+                    break;
+            default:    stringToReturn = String.valueOf(currentCharOfRegex);
+                    break;
+        }
+        return stringToReturn;
+    }
+
+    private char randomChar(){
+
+        Random randomGenerator = new Random();
+        return (char) (randomGenerator.nextInt(CODE_OF_MAX_NUMBER_OF_CHAR));
     }
 
 

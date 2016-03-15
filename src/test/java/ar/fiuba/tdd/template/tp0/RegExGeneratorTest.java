@@ -39,13 +39,14 @@ public class RegExGeneratorTest {
         assertTrue(validate("Stream55", 1));
     }
 
-    //TODO: assert these tests
-    /*
+
     @Test
     public void testAnyCharacter() {
         assertTrue(validate(".", 1));
     }
 
+    //TODO: assert these tests
+    /*
     @Test
     public void testMultipleCharacters() {
         assertTrue(validate("...", 1));
