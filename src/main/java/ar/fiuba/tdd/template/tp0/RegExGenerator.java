@@ -7,10 +7,20 @@ public class RegExGenerator {
     private int maxLength;
 
     public RegExGenerator(int maxLength) {
+
         this.maxLength = maxLength;
     }
 
+
+
     public List<String> generate(String regEx, int numberOfResults) {
+
+        ArrayList<String> listOfStringsWithMatchingRegex = new ArrayList<String>();
+
+        for (int numberOfGeneratedStrings = 0; numberOfGeneratedStrings < numberOfResults; numberOfGeneratedStrings++){
+            listOfStringsWithMatchingRegex.add(generateOneRandomStringFromRegex(regEx));
+        }
+
         return new ArrayList<String>() {
             {
                 add("a");
@@ -19,4 +29,15 @@ public class RegExGenerator {
             }
         };
     }
+
+    private String generateOneRandomStringFromRegex(String regEx) {
+        if(this.maxLength < regEx.length()){
+            return "";
+        }
+        else{
+            return regEx;
+        }
+    }
+
+
 }
