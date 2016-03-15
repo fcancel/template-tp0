@@ -8,10 +8,11 @@ import java.util.Random;
 public class RegExGenerator {
     private int maxLength;
     static final int CODE_OF_MAX_NUMBER_OF_CHAR = 255;
+    private Random randomGenerator;
 
     public RegExGenerator(int maxLength) {
-
         this.maxLength = maxLength;
+        Random randomGenerator = new Random();
     }
 
 
@@ -48,11 +49,49 @@ public class RegExGenerator {
         String subString = regEx.substring(indexOfRegex + 1, firstOccurenceAt);
         //Now we have to see if it has a quantity modifier
         if (isQuantityModifier(regEx.charAt(firstOccurenceAt + 1))){
-            result = generateStringFromQuantity(subString, firstOccurenceAt + 1);
+            result = generateStringSetFromQuantity(subString, regEx, firstOccurenceAt + 1);
         }
         else {
             result = selectOneRandomCharFromSet(subString);
         }
+    }
+
+    private String generateStringSetFromQuantity(String subString, String regex, int whereIsTheSpecialModifier) {
+        switch(regex.charAt(whereIsTheSpecialModifier)){
+            case '+':   return generateStringSetPlus(subString);
+            break;
+            case '*':   return generateStringSetMultiplier(subString);
+            break;
+            case '?':   return generateStringSetQuestionMark(subString);
+            break;
+            default:    return "";
+        }
+    }
+
+    //TODO: complete this one
+    private String generateStringSetPlus(String subString) {
+        return randomCharsFromSet(subString, 1);
+    }
+
+    private String generateStringSetQuestionMark(String subString) {
+        return randomCharsFromSet(subString, 1);
+    }
+    //TODO: add the min part
+    private String randomCharsFromSet (String subString, int minNumberOfTimes, int maxNumberOfTimes){
+        StringBuffer returnValue = new StringBuffer();
+        String stringToAdd = "";
+        int howManyTimes = this.randomGenerator.nextInt(maxNumberOfTimes);
+        while (howManyTimes<maxNumberOfTimes){
+            stringToAdd = String.valueOf(subString.charAt(this.randomGenerator.nextInt(subString.length())));
+            returnValue.append(stringToAdd);
+        }
+        return returnValue.toString();
+    }
+
+    private String selectOneRandomCharFromSet(String subString) {
+        int totalOfCharsInSet = subString.length();
+        int indexOfRandomChar = this.randomGenerator.nextInt(totalOfCharsInSet);
+        return String.valueOf(subString.charAt(indexOfRandomChar));
     }
 
     private boolean isQuantityModifier(char c) {
