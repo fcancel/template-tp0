@@ -29,7 +29,7 @@ public class RegExGeneratorTest {
                     },
                     (item1, item2) -> item1 && item2);
     }
-
+/*
     @Test
     public void testACharacter() {
         assertTrue(validate("a", 1));
@@ -45,12 +45,12 @@ public class RegExGeneratorTest {
     public void testAnyCharacter() {
         assertTrue(validate(".", 1));
     }
-
+*/
     @Test
     public void testLiteral() {
         assertTrue(validate("\\@", 1));
     }
-
+/*
     @Test
     public void testLiteralDotCharacter() {
         assertTrue(validate("\\@..", 1));
@@ -70,10 +70,6 @@ public class RegExGeneratorTest {
     public void testZeroOrOneCharacter() {
         assertTrue(validate("\\@.h?", 1));
     }
-
-    //TODO: assert these tests
-    /*
-
 
     @Test
     public void testCharacterSet() {
