@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Random;
+import java.util.function.BooleanSupplier;
 
 public class RegExGenerator {
     private int maxLength;
     static final int CODE_OF_MAX_NUMBER_OF_CHAR = 255;
-    private Random randomGenerator;
+    private Random randomGenerator = new Random();
     private int indexOfRegex;
 
     public RegExGenerator(int maxLength) {
         this.maxLength = maxLength;
-        Random randomGenerator = new Random();
     }
 
 
@@ -34,13 +34,13 @@ public class RegExGenerator {
         String result = "";
         StringBuffer buffer = new StringBuffer();
         String currentChar;
-        for(this.indexOfRegex = 0; this.indexOfRegex < regEx.length(); this.indexOfRegex++) {
+        for (this.indexOfRegex = 0; this.indexOfRegex < regEx.length(); this.indexOfRegex++) {
             currentChar = String.valueOf(regEx.charAt(this.indexOfRegex));
-            if(isSet(currentChar)) {
+            if (isSet(currentChar)) {
                 buffer.append(generatePossibleSet(regEx));
                 continue;
             }
-            if(isLiteral(regEx.charAt(this.indexOfRegex))) {                ;
+            if (isLiteral(regEx.charAt(this.indexOfRegex))) {
                 buffer.append(generatePossibleLiteral(regEx));
                 continue;
             }
@@ -48,22 +48,38 @@ public class RegExGenerator {
             continue;
         }
         result = buffer.toString();
+        System.out.println("Me dio: " + result);
         return result;
     }
 
+    private Boolean outOfBounds(String regEx, int index) {
+        return index >= regEx.length();
+    }
+
     private String generateNormalChar(String regEx, String currentChar) {
-        if (this.indexOfRegex + 1 < regEx.length()){
+        if (currentChar.equals(".")) {
+            currentChar = String.valueOf(randomChar());
+        }
+        if (this.indexOfRegex + 1 < regEx.length()) {
             String stringWithQuantity = generateStringSetFromQuantity(currentChar, regEx, this.indexOfRegex + 1);
             return stringWithQuantity;
+        } else {
+            return currentChar;
         }
-        else return currentChar;
     }
 
     private String generatePossibleLiteral(String regEx) {
-        this.indexOfRegex += 2;
+        this.indexOfRegex += 1;
+        if (outOfBounds(regEx,this.indexOfRegex)) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
         String stringLiteral = String.valueOf(regEx.charAt(this.indexOfRegex));
-        String stringWithQuantity = generateStringSetFromQuantity(stringLiteral, regEx, this.indexOfRegex + 1);
-        return "@";
+        if (outOfBounds(regEx, this.indexOfRegex + 1)) {
+            return stringLiteral;
+        } else {
+            String stringWithQuantity = generateStringSetFromQuantity(stringLiteral, regEx, this.indexOfRegex + 1);
+            return stringWithQuantity;
+        }
     }
 
     private boolean isLiteral(char currentChar) {
@@ -73,15 +89,14 @@ public class RegExGenerator {
     private String generatePossibleSet(String regEx) {
         String result;
         int firstOccurenceAt = regEx.indexOf(']',this.indexOfRegex);
-        if (firstOccurenceAt == -1){
+        if (firstOccurenceAt == -1) {
             throw new NoSuchElementException();
         }
         String subString = regEx.substring(this.indexOfRegex + 1, firstOccurenceAt);
         //Now we have to see if it has a quantity modifier
-        if (isQuantityModifier(regEx.charAt(firstOccurenceAt + 1))){
+        if (isQuantityModifier(regEx.charAt(firstOccurenceAt + 1))) {
             result = generateStringSetFromQuantity(subString, regEx, firstOccurenceAt + 1);
-        }
-        else {
+        } else {
             result = selectOneRandomCharFromSet(subString);
         }
         this.indexOfRegex = firstOccurenceAt;
@@ -89,7 +104,10 @@ public class RegExGenerator {
     }
 
     private String generateStringSetFromQuantity(String subString, String regex, int whereIsTheSpecialModifier) {
-        switch(regex.charAt(whereIsTheSpecialModifier)){
+        if (outOfBounds(regex, whereIsTheSpecialModifier)) {
+            return subString;
+        }
+        switch (regex.charAt(whereIsTheSpecialModifier)) {
             case '+':   return generateStringSetPlus(subString);
             case '*':   return generateStringSetAsterisk(subString);
             case '?':   return generateStringSetQuestionMark(subString);
@@ -109,15 +127,16 @@ public class RegExGenerator {
         return randomCharsFromSet(subString, 0, 1);
     }
 
-    private String randomCharsFromSet (String subString, int minNumberOfTimes, int maxNumberOfTimes){
+    private String randomCharsFromSet(String subString, int minNumberOfTimes, int maxNumberOfTimes) {
+        this.indexOfRegex += 1;
         StringBuffer returnValue = new StringBuffer();
-        String stringToAdd = "";
         int howManyTimes = this.randomGenerator.nextInt(maxNumberOfTimes);
-        while (howManyTimes<maxNumberOfTimes + minNumberOfTimes){
-            stringToAdd = String.valueOf(subString.charAt(this.randomGenerator.nextInt(subString.length())));
-            returnValue.append(stringToAdd);
+        while (howManyTimes < (maxNumberOfTimes + minNumberOfTimes)) {
+            returnValue.append(subString);
+            howManyTimes++;
         }
         return returnValue.toString();
+
     }
 
     private String selectOneRandomCharFromSet(String subString) {
@@ -126,57 +145,17 @@ public class RegExGenerator {
         return String.valueOf(subString.charAt(indexOfRandomChar));
     }
 
-    private boolean isQuantityModifier(char c) {
-        return (c == '?' || c == '+' || c == '*');
+    private boolean isQuantityModifier(char character) {
+        return (character == '?' || character == '+' || character == '*');
     }
 
 
     private boolean isSet(String currentChar) {
-        return (currentChar == "[");
+        return (currentChar.equals("["));
     }
-    /*
-    private String generateOneRandomStringFromRegex(String regEx) {
-            char currentCharOfRegex;
-            StringBuffer buffer = new StringBuffer();
-            Random randomGenerator = new Random();
-            ArrayList<Character> charsInSet = new ArrayList<Character>();
 
-            for(int indexOfChar = 0; indexOfChar < regEx.length(); indexOfChar++){
-                currentCharOfRegex = regEx.charAt(indexOfChar);
-
-                switch (currentCharOfRegex){
-                    case '.':   buffer.append(randomChar());
-                        break;
-                    case '\\':  buffer.append(regEx.charAt(indexOfChar+1));
-                                indexOfChar++;
-                        break;
-                    case '[':   while(regEx.charAt(indexOfChar+1) != ']'){
-                                    charsInSet.add(regEx.charAt(indexOfChar+1));
-                                    indexOfChar++;
-                                }
-                        break;
-                    case '+':   if(this.maxLength < 10);
-                        break;
-                    case '?':   if(randomGenerator.nextInt(1) == 1){ //We will generate a randomness to add or not the char
-                                    if(indexOfChar > 0){            //So that it will not try to access negative values
-                                        buffer.append(regEx.charAt(indexOfChar-1));
-                                    }
-                                }
-                        break;
-                    default:    buffer.append(currentCharOfRegex);
-                        break;
-                }
-            }
-
-            String stringToReturn = buffer.toString();
-            System.out.println(stringToReturn);
-            return stringToReturn;
-    }
-*/
     private char randomChar() {
         Random randomGenerator = new Random();
         return (char) (randomGenerator.nextInt(CODE_OF_MAX_NUMBER_OF_CHAR));
     }
-
-
 }
