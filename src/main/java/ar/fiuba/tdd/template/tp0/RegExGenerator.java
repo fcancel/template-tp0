@@ -93,12 +93,15 @@ public class RegExGenerator {
             throw new NoSuchElementException();
         }
         String subString = regEx.substring(this.indexOfRegex + 1, firstOccurenceAt);
-        //Now we have to see if it has a quantity modifier
-        if (isQuantityModifier(regEx.charAt(firstOccurenceAt + 1))) {
-            result = generateStringSetFromQuantity(subString, regEx, firstOccurenceAt + 1);
-        } else {
-            result = selectOneRandomCharFromSet(subString);
+        result = selectOneRandomCharFromSet(subString);
+
+        if (!outOfBounds(regEx, firstOccurenceAt + 1)) {
+            if (isQuantityModifier(regEx.charAt(firstOccurenceAt + 1))) {
+                result = generateStringSetFromQuantity(result, regEx, firstOccurenceAt + 1);
+                firstOccurenceAt += 1;
+            }
         }
+
         this.indexOfRegex = firstOccurenceAt;
         return result;
     }
