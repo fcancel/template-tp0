@@ -31,18 +31,18 @@ public class RegExGenerator {
 
     private String generateOneRandomStringFromRegex(String regEx) {
         StringBuilder buffer = new StringBuilder();
-        String currentChar;
+        String currentString;
         for (this.indexOfRegex = 0; this.indexOfRegex < regEx.length(); this.indexOfRegex++) {
-            currentChar = String.valueOf(regEx.charAt(this.indexOfRegex));
-            if (isSet(currentChar)) {
+            currentString = String.valueOf(regEx.charAt(this.indexOfRegex));
+            if (isSet(currentString)) {
                 buffer.append(generatePossibleSet(regEx));
                 continue;
             }
-            if (isLiteral(regEx.charAt(this.indexOfRegex))) {
+            if (isLiteral(currentString)) {
                 buffer.append(generatePossibleLiteral(regEx));
                 continue;
             }
-            buffer.append(generateNormalChar(regEx, currentChar));
+            buffer.append(generateNormalString(regEx, currentString));
         }
         return buffer.toString();
     }
@@ -50,23 +50,16 @@ public class RegExGenerator {
     private Boolean outOfBounds(String regEx, int index) {
         return index >= regEx.length();
     }
-    private Boolean inBounds(String regEx, int index) {
-        return index <regEx.length();
-    }
 
-    private Boolean isWildcard (String string){
+    private Boolean isWildcard(String string) {
         return string.equals(".");
     }
 
-    private String generateNormalChar(String regEx, String currentChar) {
+    private String generateNormalString(String regEx, String currentChar) {
         if (isWildcard(currentChar)) {
             currentChar = String.valueOf(randomChar());
         }
-        if (inBounds(regEx,this.indexOfRegex + 1)) {
-            return generateStringSetFromQuantity(currentChar, regEx, this.indexOfRegex + 1);
-        } else {
-            return currentChar;
-        }
+        return generateStringWithOrWithoutQuantityModifier(currentChar, regEx, this.indexOfRegex + 1);
     }
 
     private String generatePossibleLiteral(String regEx) {
@@ -75,38 +68,28 @@ public class RegExGenerator {
             throw new ArrayIndexOutOfBoundsException();
         }
         String stringLiteral = String.valueOf(regEx.charAt(this.indexOfRegex));
-        if (outOfBounds(regEx, this.indexOfRegex + 1)) {
-            return stringLiteral;
-        } else {
-            return generateStringSetFromQuantity(stringLiteral, regEx, this.indexOfRegex + 1);
-        }
+        return generateStringWithOrWithoutQuantityModifier(stringLiteral, regEx, this.indexOfRegex + 1);
     }
 
-    private boolean isLiteral(char currentChar) {
-        return (currentChar == '\\');
+    private boolean isLiteral(String currentString) {
+        return (currentString.equals("\\"));
     }
 
     private String generatePossibleSet(String regEx) {
-        String result;
-        int firstOccurenceAt = regEx.indexOf(']',this.indexOfRegex);
-        if (firstOccurenceAt == -1) {
+        String stringToUse;
+        int firstOccurrenceOfClosingSquareBracketAt = regEx.indexOf(']',this.indexOfRegex);
+        if (firstOccurrenceOfClosingSquareBracketAt == -1) {
             throw new NoSuchElementException();
         }
-        String subString = regEx.substring(this.indexOfRegex + 1, firstOccurenceAt);
-        result = selectOneRandomCharFromSet(subString);
+        stringToUse = regEx.substring(this.indexOfRegex + 1, firstOccurrenceOfClosingSquareBracketAt);
+        stringToUse = selectOneRandomCharFromSet(stringToUse);
+        stringToUse = generateStringWithOrWithoutQuantityModifier(stringToUse, regEx, firstOccurrenceOfClosingSquareBracketAt + 1);
 
-        if (!outOfBounds(regEx, firstOccurenceAt + 1)) {
-            if (isQuantityModifier(regEx.charAt(firstOccurenceAt + 1))) {
-                result = generateStringSetFromQuantity(result, regEx, firstOccurenceAt + 1);
-                firstOccurenceAt += 1;
-            }
-        }
-
-        this.indexOfRegex = firstOccurenceAt;
-        return result;
+        this.indexOfRegex = firstOccurrenceOfClosingSquareBracketAt + 1;
+        return stringToUse;
     }
 
-    private String generateStringSetFromQuantity(String subString, String regex, int whereIsTheSpecialModifier) {
+    private String generateStringWithOrWithoutQuantityModifier(String subString, String regex, int whereIsTheSpecialModifier) {
         if (outOfBounds(regex, whereIsTheSpecialModifier)) {
             return subString;
         }
@@ -146,10 +129,6 @@ public class RegExGenerator {
         int totalOfCharsInSet = subString.length();
         int indexOfRandomChar = this.randomGenerator.nextInt(totalOfCharsInSet);
         return String.valueOf(subString.charAt(indexOfRandomChar));
-    }
-
-    private boolean isQuantityModifier(char character) {
-        return (character == '?' || character == '+' || character == '*');
     }
 
 

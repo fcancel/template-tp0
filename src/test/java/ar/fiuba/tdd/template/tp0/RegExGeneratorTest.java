@@ -46,6 +46,11 @@ public class RegExGeneratorTest {
     }
 
     @Test
+    public void testModifierInTheMiddleOfRegexAndWithASet() {
+        assertTrue(validate("ab[acd]+cd*j", 1));
+    }
+
+    @Test
     public void testAnyCharacter() {
         assertTrue(validate(".", 1));
     }
