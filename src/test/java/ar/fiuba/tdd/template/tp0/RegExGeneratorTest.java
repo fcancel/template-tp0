@@ -40,6 +40,10 @@ public class RegExGeneratorTest {
         assertTrue(validate("Stream55", 1));
     }
 
+    @Test
+    public void testModifierInTheMiddleOfRegex() {
+        assertTrue(validate("ab+cd*j", 1));
+    }
 
     @Test
     public void testAnyCharacter() {
