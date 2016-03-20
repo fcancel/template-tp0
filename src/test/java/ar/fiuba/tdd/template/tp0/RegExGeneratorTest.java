@@ -6,14 +6,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 
 
 public class RegExGeneratorTest {
 
-    static final int MAXIMUM_LENGTH_REGEX = 50;
+    private static final int MAXIMUM_LENGTH_REGEX = 50;
 
     private boolean validate(String regEx, int numberOfResults) {
         RegExGenerator generator = new RegExGenerator(MAXIMUM_LENGTH_REGEX);
@@ -95,4 +94,13 @@ public class RegExGeneratorTest {
         assertTrue(validate("[abc]+", 1));
     }
 
+    @Test
+    public void testSetWithLiteral() {
+        assertTrue(validate("[\\@]", 1));
+    }
+
+    @Test
+    public void testSetWithLiteralWildcard() {
+        assertTrue(validate("[\\.]", 1));
+    }
 }

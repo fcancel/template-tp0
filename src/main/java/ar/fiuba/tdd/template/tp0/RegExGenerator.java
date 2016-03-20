@@ -5,20 +5,20 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
-public class RegExGenerator {
+class RegExGenerator {
     private int maxLength;
-    static final int CODE_OF_MAX_NUMBER_OF_CHAR = 255;
+    private static final int CODE_OF_MAX_NUMBER_OF_CHAR = 255;
     private Random randomGenerator = new Random();
     private int indexOfRegex;
     private String regEx;
 
-    public RegExGenerator(int maxLength) {
+    RegExGenerator(int maxLength) {
         this.maxLength = maxLength;
     }
 
 
 
-    public List<String> generate(String regEx, int numberOfResults) {
+    List<String> generate(String regEx, int numberOfResults) {
         ArrayList<String> listOfStringsWithMatchingRegex = new ArrayList<>();
 
         setRegex(regEx);
@@ -76,6 +76,7 @@ public class RegExGenerator {
             throw new NoSuchElementException();
         }
         stringToUse = regEx.substring(indexGetCurrent() + 1, firstOccurrenceOfClosingSquareBracketAt);
+        stringToUse = stringToUse.replace("\\", "");
         stringToUse = selectOneRandomCharFromSet(stringToUse);
         stringToUse = generateStringWithOrWithoutQuantityModifier(stringToUse, regEx, firstOccurrenceOfClosingSquareBracketAt + 1);
 
