@@ -103,4 +103,16 @@ public class RegExGeneratorTest {
     public void testSetWithLiteralWildcard() {
         assertTrue(validate("[\\.]", 1));
     }
+
+    @Test
+    public void testInvalidSet() {
+        Throwable exception = null;
+        try {
+            assertTrue(validate("[a+]", 1));
+        } catch (Throwable ex) {
+            exception = ex;
+        }
+        assertTrue(exception instanceof InvalidSetException);
+    }
+
 }

@@ -1,9 +1,6 @@
 package ar.fiuba.tdd.template.tp0;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Random;
+import java.util.*;
 
 class RegExGenerator {
     private int maxLength;
@@ -11,12 +8,15 @@ class RegExGenerator {
     private Random randomGenerator = new Random();
     private int indexOfRegex;
     private String regEx;
+    private List<Character> listOfSpecialChars;
 
     RegExGenerator(int maxLength) {
         this.maxLength = maxLength;
+        this.listOfSpecialChars = new ArrayList<>();
+        this.listOfSpecialChars.add('+');
+        this.listOfSpecialChars.add('*');
+        this.listOfSpecialChars.add('?');
     }
-
-
 
     List<String> generate(String regEx, int numberOfResults) {
         ArrayList<String> listOfStringsWithMatchingRegex = new ArrayList<>();
@@ -76,6 +76,9 @@ class RegExGenerator {
             throw new NoSuchElementException();
         }
         stringToUse = regEx.substring(indexGetCurrent() + 1, firstOccurrenceOfClosingSquareBracketAt);
+        if (setHasSpecialCharactaresWithoutLiteral(stringToUse)) {
+            throw new InvalidSetException();
+        }
         stringToUse = stringToUse.replace("\\", "");
         stringToUse = selectOneRandomCharFromSet(stringToUse);
         stringToUse = generateStringWithOrWithoutQuantityModifier(stringToUse, regEx, firstOccurrenceOfClosingSquareBracketAt + 1);
@@ -172,5 +175,24 @@ class RegExGenerator {
 
     private int randomNextInt(int max) {
         return this.randomGenerator.nextInt(max);
+    }
+
+    private boolean isSpecialChar(char value) {
+        return this.listOfSpecialChars.contains(value);
+    }
+
+    private boolean setHasSpecialCharactaresWithoutLiteral(String substringFromSet) {
+        boolean previousIsLiteral = false;
+        char currentChar;
+        for (int index = 0; index < substringFromSet.length(); index++) {
+            currentChar = substringFromSet.charAt(index);
+            if (isSpecialChar(substringFromSet.charAt(index)) && !previousIsLiteral) {
+                return true;
+            }
+            if (currentChar == '\\') {
+                previousIsLiteral = true;
+            }
+        }
+        return false;
     }
 }
