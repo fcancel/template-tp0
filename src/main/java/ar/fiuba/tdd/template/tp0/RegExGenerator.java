@@ -71,10 +71,8 @@ class RegExGenerator {
 
     private String generatePossibleSet(String regEx) {
         String stringToUse;
-        int firstOccurrenceOfClosingSquareBracketAt = regEx.indexOf(']',indexGetCurrent());
-        if (firstOccurrenceOfClosingSquareBracketAt == -1) {
-            throw new NoSuchElementException();
-        }
+        int firstOccurrenceOfClosingSquareBracketAt = getClosingBracketIndex(indexGetCurrent(), regEx);
+
         stringToUse = regEx.substring(indexGetCurrent() + 1, firstOccurrenceOfClosingSquareBracketAt);
         checkForSetExceptions(stringToUse);
 
@@ -133,6 +131,9 @@ class RegExGenerator {
 
     private String selectOneRandomCharFromSet(String subString) {
         int totalOfCharsInSet = subString.length();
+        if (subString.equals("")) {
+            throw new EmptySetException();
+        }
         int indexOfRandomChar = randomNextInt(totalOfCharsInSet);
         return String.valueOf(subString.charAt(indexOfRandomChar));
     }
@@ -202,5 +203,22 @@ class RegExGenerator {
             }
         }
         return false;
+    }
+
+    private int getClosingBracketIndex(int index, String regEx) {
+        boolean searchingForEndBracket = true;
+        int indexBracket;
+        do {
+            indexBracket = regEx.indexOf(']',index + 1);
+            if (indexBracket == -1) {
+                throw new NoSuchElementException();
+            }
+            if (indexBracket > 0 && (regEx.charAt(indexBracket - 1) == '\\')) {
+                index = indexBracket;
+            } else {
+                searchingForEndBracket = false;
+            }
+        } while (searchingForEndBracket);
+        return indexBracket;
     }
 }

@@ -105,6 +105,11 @@ public class RegExGeneratorTest {
     }
 
     @Test
+    public void testSetEndBracketLiteral() {
+        assertTrue(validate("[\\]]", 1));
+    }
+
+    @Test
     public void testInvalidSet() {
         Throwable exception = null;
         try {
