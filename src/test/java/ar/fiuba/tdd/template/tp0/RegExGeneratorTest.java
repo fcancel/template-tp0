@@ -115,4 +115,15 @@ public class RegExGeneratorTest {
         assertTrue(exception instanceof InvalidSetException);
     }
 
+    @Test
+    public void testInvalidEmptySet() {
+        Throwable exception = null;
+        try {
+            assertTrue(validate("[]", 1));
+        } catch (Throwable ex) {
+            exception = ex;
+        }
+        assertTrue(exception instanceof EmptySetException);
+    }
+
 }

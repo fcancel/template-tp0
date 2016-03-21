@@ -76,6 +76,9 @@ class RegExGenerator {
             throw new NoSuchElementException();
         }
         stringToUse = regEx.substring(indexGetCurrent() + 1, firstOccurrenceOfClosingSquareBracketAt);
+        if (stringToUse.equals("")) {
+            throw new EmptySetException();
+        }
         if (setHasSpecialCharactaresWithoutLiteral(stringToUse)) {
             throw new InvalidSetException();
         }
