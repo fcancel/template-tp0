@@ -76,18 +76,23 @@ class RegExGenerator {
             throw new NoSuchElementException();
         }
         stringToUse = regEx.substring(indexGetCurrent() + 1, firstOccurrenceOfClosingSquareBracketAt);
-        if (stringToUse.equals("")) {
-            throw new EmptySetException();
-        }
-        if (setHasSpecialCharactaresWithoutLiteral(stringToUse)) {
-            throw new InvalidSetException();
-        }
+        checkForSetExceptions(stringToUse);
+
         stringToUse = stringToUse.replace("\\", "");
         stringToUse = selectOneRandomCharFromSet(stringToUse);
         stringToUse = generateStringWithOrWithoutQuantityModifier(stringToUse, regEx, firstOccurrenceOfClosingSquareBracketAt + 1);
 
         indexSet(firstOccurrenceOfClosingSquareBracketAt + 1);
         return stringToUse;
+    }
+
+    private void checkForSetExceptions(String stringToUse) {
+        if (stringToUse.equals("")) {
+            throw new EmptySetException();
+        }
+        if (setHasSpecialCharactaresWithoutLiteral(stringToUse)) {
+            throw new InvalidSetException();
+        }
     }
 
     private String generateStringWithOrWithoutQuantityModifier(String subString, String regex, int whereIsTheSpecialModifier) {
