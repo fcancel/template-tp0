@@ -1,6 +1,8 @@
 package ar.fiuba.tdd.template.tp0;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class RegExGenerator {
     private int maxLength;
@@ -151,7 +153,15 @@ class RegExGenerator {
     }
 
     private char randomChar() {
-        return (char) (randomNextInt(CODE_OF_MAX_NUMBER_OF_CHAR));
+        boolean isValid;
+        char randomChar;
+        do {
+            randomChar = (char) (randomNextInt(CODE_OF_MAX_NUMBER_OF_CHAR));
+            Pattern pattern = Pattern.compile(".");
+            Matcher matcher = pattern.matcher(String.valueOf(randomChar));
+            isValid = matcher.matches();
+        } while (!isValid);
+        return randomChar;
     }
 
     private void indexAdvance() {

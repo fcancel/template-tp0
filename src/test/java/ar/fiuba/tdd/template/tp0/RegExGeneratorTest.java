@@ -110,6 +110,11 @@ public class RegExGeneratorTest {
     }
 
     @Test
+    public void testLotsOfWildcards() {
+        assertTrue(validate(".............", 10000));
+    }
+
+    @Test
     public void testInvalidSet() {
         Throwable exception = null;
         try {
